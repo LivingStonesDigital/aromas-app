@@ -10,7 +10,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "CALC - Controle de Custos",
+  title: "AROMAS APP",
   description: "Controle de custos de produção de aromatizadores",
 };
 

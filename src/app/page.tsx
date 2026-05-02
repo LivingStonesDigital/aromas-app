@@ -111,6 +111,7 @@ export default function Home() {
   const suggestedPrice = (() => {
     const margin = Number(rMargin) || 0;
     if (recipeTotal === 0) return 0;
+    if (margin >= 100) return Infinity;
     return recipeTotal / (1 - margin / 100);
   })();
 
@@ -142,7 +143,7 @@ export default function Home() {
     setRName(recipe.name);
     setRFinalQty(String(recipe.finalQty));
     setRFinalUnit(recipe.finalUnit);
-    setRMargin(String(recipe.profitMargin));
+    setRMargin(String(recipe.profitMargin ?? recipe.profitMargin));
     setRMaterials(recipe.materials);
     setEditingRecipeId(recipe._id);
     setTab("recipes");
@@ -504,7 +505,7 @@ export default function Home() {
                       <div>
                         <div className="font-bold text-xs uppercase tracking-widest mb-2">Preço Sugerido</div>
                         <div className="text-3xl sm:text-4xl font-bold bg-neo-accent text-white px-2 inline-block" style={{fontSize: suggestedPrice > 999 ? "1.5rem" : undefined}}>
-                          R$ {suggestedPrice.toFixed(2)}
+                          {suggestedPrice === Infinity ? "∞ (margem 100%)" : `R$ ${suggestedPrice.toFixed(2)}`}
                         </div>
                       </div>
                       {rFinalQty && (
@@ -569,7 +570,7 @@ export default function Home() {
                           <td className="font-mono font-bold">{r.finalUnit}</td>
                           <td className="font-mono font-bold">R$ {r.totalCost.toFixed(2)}</td>
                           <td className="font-bold">{r.profitMargin}%</td>
-                          <td className="font-mono font-bold bg-neo-accent text-white px-2">R$ {r.suggestedPrice.toFixed(2)}</td>
+                          <td className="font-mono font-bold bg-neo-accent text-white px-2">{r.suggestedPrice === Infinity ? "∞" : `R$ ${r.suggestedPrice.toFixed(2)}`}</td>
                           <td>
                             <div className="flex gap-2">
                               <button className="btn-danger active:translate-x-[2px] active:translate-y-[2px] active:shadow-none" onClick={() => handleEditRecipe(r)}>Editar</button>
