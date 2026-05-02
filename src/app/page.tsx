@@ -263,11 +263,18 @@ export default function Home() {
                   </div>
                   <div>
                     <label className="block font-bold text-xs uppercase tracking-widest mb-2">Unidade</label>
-                    <input
+                    <select
                       value={mUnit}
                       onChange={e => setMUnit(e.target.value)}
-                      placeholder="ml, g, un"
-                    />
+                    >
+                      <option value="">Selecione...</option>
+                      <option value="ml">ml - mililitro</option>
+                      <option value="L">L - litro</option>
+                      <option value="g">g - grama</option>
+                      <option value="kg">kg - kilograma</option>
+                      <option value="un">un - unidade</option>
+                      <option value="colher">colher</option>
+                    </select>
                   </div>
                   <div>
                     <label className="block font-bold text-xs uppercase tracking-widest mb-2">Valor da Embalagem (R$)</label>
@@ -389,11 +396,18 @@ export default function Home() {
                   </div>
                   <div>
                     <label className="block font-bold text-xs uppercase tracking-widest mb-2">Unidade</label>
-                    <input
+                    <select
                       value={rFinalUnit}
                       onChange={e => setRFinalUnit(e.target.value)}
-                      placeholder="ml, un"
-                    />
+                    >
+                      <option value="">Selecione...</option>
+                       <option value="ml">ml - mililitro</option>
+                      <option value="L">L - litro</option>
+                      <option value="g">g - grama</option>
+                      <option value="kg">kg - kilograma</option>
+                      <option value="un">un - unidade</option>
+                      <option value="colher">colher</option>
+                    </select>
                   </div>
                   <div>
                     <label className="block font-bold text-xs uppercase tracking-widest mb-2">Margem de Lucro (%)</label>
@@ -415,17 +429,17 @@ export default function Home() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                   <div>
                     <label className="block font-bold text-xs uppercase tracking-widest mb-2">Código da Matéria</label>
-                    <input
+                    <select
                       value={rmCode}
                       onChange={e => setRmCode(e.target.value)}
-                      placeholder="Código"
-                      list="material-codes"
-                    />
-                    <datalist id="material-codes">
+                    >
+                      <option value="">Selecione...</option>
                       {materials.map(m => (
-                        <option key={m._id} value={m.code} />
+                        <option key={m._id} value={m.code}>
+                          {m.code} - {m.name}
+                        </option>
                       ))}
-                    </datalist>
+                    </select>
                   </div>
                   <div>
                     <label className="block font-bold text-xs uppercase tracking-widest mb-2">Quantidade Usada</label>

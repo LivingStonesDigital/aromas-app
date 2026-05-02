@@ -35,6 +35,12 @@ export const create = mutation({
     suggestedPrice: v.number(),
   },
   handler: async (ctx, args) => {
+    // Validate inputs to avoid negative costs or margins
+    if (args.totalCost < 0) throw new Error("totalCost não pode ser negativo");
+    if (args.profitMargin < 0) throw new Error("profitMargin não pode ser negativo");
+    // Margin here is treated as markup over the totalCost
+    // so price is computed as totalCost * (1 + profitMargin)
+    const computedSuggestedPrice = args.totalCost * (1 + args.profitMargin);
     return await ctx.db.insert("recipes", {
       name: args.name,
       finalQty: args.finalQty,
@@ -42,7 +48,7 @@ export const create = mutation({
       materials: args.materials,
       totalCost: args.totalCost,
       profitMargin: args.profitMargin,
-      suggestedPrice: args.suggestedPrice,
+      suggestedPrice: computedSuggestedPrice,
     });
   },
 });
@@ -68,6 +74,11 @@ export const update = mutation({
     suggestedPrice: v.number(),
   },
   handler: async (ctx, args) => {
+    // Validate inputs to avoid negative costs or margins
+    if (args.totalCost < 0) throw new Error("totalCost não pode ser negativo");
+    if (args.profitMargin < 0) throw new Error("profitMargin não pode ser negativo");
+    // Recompute the price based on the new totalCost and profitMargin
+    const computedSuggestedPrice = args.totalCost * (1 + args.profitMargin);
     return await ctx.db.patch(args.id, {
       name: args.name,
       finalQty: args.finalQty,
@@ -75,7 +86,7 @@ export const update = mutation({
       materials: args.materials,
       totalCost: args.totalCost,
       profitMargin: args.profitMargin,
-      suggestedPrice: args.suggestedPrice,
+      suggestedPrice: computedSuggestedPrice,
     });
   },
 });
