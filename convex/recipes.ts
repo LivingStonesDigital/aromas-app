@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { computeSuggestedPrice } from "./utils/pricing";
 
 export const getAll = query({
   args: {},
@@ -33,14 +34,20 @@ export const create = mutation({
     totalCost: v.number(),
     profitMargin: v.number(),
     suggestedPrice: v.number(),
+    preserveSuggestedPrice: v.boolean(),
   },
   handler: async (ctx, args) => {
     // Validate inputs to avoid negative costs or margins
     if (args.totalCost < 0) throw new Error("totalCost não pode ser negativo");
     if (args.profitMargin < 0) throw new Error("profitMargin não pode ser negativo");
-    // Margin here is treated as markup over the totalCost
-    // so price is computed as totalCost * (1 + profitMargin)
-    const computedSuggestedPrice = args.totalCost * (1 + args.profitMargin);
+    // Compute or preserve suggestedPrice based on flag (default: compute on backend)
+    const preserveSuggestedPrice = (args as any).preserveSuggestedPrice === true;
+    let computedSuggestedPrice: number;
+    if (preserveSuggestedPrice && typeof (args as any).suggestedPrice === "number") {
+      computedSuggestedPrice = (args as any).suggestedPrice;
+    } else {
+      computedSuggestedPrice = computeSuggestedPrice(args.totalCost, args.profitMargin);
+    }
     return await ctx.db.insert("recipes", {
       name: args.name,
       finalQty: args.finalQty,
@@ -72,13 +79,20 @@ export const update = mutation({
     totalCost: v.number(),
     profitMargin: v.number(),
     suggestedPrice: v.number(),
+    preserveSuggestedPrice: v.boolean(),
   },
   handler: async (ctx, args) => {
     // Validate inputs to avoid negative costs or margins
     if (args.totalCost < 0) throw new Error("totalCost não pode ser negativo");
     if (args.profitMargin < 0) throw new Error("profitMargin não pode ser negativo");
-    // Recompute the price based on the new totalCost and profitMargin
-    const computedSuggestedPrice = args.totalCost * (1 + args.profitMargin);
+    // Compute or preserve suggestedPrice based on flag (default: compute on backend)
+    const preserveSuggestedPrice = (args as any).preserveSuggestedPrice === true;
+    let computedSuggestedPrice: number;
+    if (preserveSuggestedPrice && typeof (args as any).suggestedPrice === "number") {
+      computedSuggestedPrice = (args as any).suggestedPrice;
+    } else {
+      computedSuggestedPrice = computeSuggestedPrice(args.totalCost, args.profitMargin);
+    }
     return await ctx.db.patch(args.id, {
       name: args.name,
       finalQty: args.finalQty,
@@ -96,5 +110,22 @@ export const remove = mutation({
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
     return null;
+  },
+});
+
+// Bulk recompute suggestedPrice for all recipes based on totalCost and normalized profitMargin
+export const recalculateAllPrices = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const all = await ctx.db.query("recipes").collect();
+    const updates = all.map((r) => {
+      const totalCost = typeof (r as any).totalCost === "number" ? (r as any).totalCost : 0;
+      const price = computeSuggestedPrice(totalCost, (r as any).profitMargin);
+      // Use runtime _id field to patch correct record
+      // @ts-ignore
+      return ctx.db.patch((r as any)._id, { suggestedPrice: price });
+    });
+    await Promise.all(updates);
+    return { updated: updates.length };
   },
 });

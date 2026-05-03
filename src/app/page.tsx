@@ -18,16 +18,23 @@ export default function Home() {
   const [tab, setTab] = useState<Tab>("materials");
 
   // Convex hooks - Materials
-  const { data: materials = [], isLoading: materialsLoading } = useGetRawMaterials();
-  const { mutate: createMat, isPending: isCreatingMat } = useCreateRawMaterial();
-  const { mutate: updateMat, isPending: isUpdatingMat } = useUpdateRawMaterial();
-  const { mutate: removeMat, isPending: isRemovingMat } = useRemoveRawMaterial();
+  const { data: materials = [], isLoading: materialsLoading } =
+    useGetRawMaterials();
+  const { mutate: createMat, isPending: isCreatingMat } =
+    useCreateRawMaterial();
+  const { mutate: updateMat, isPending: isUpdatingMat } =
+    useUpdateRawMaterial();
+  const { mutate: removeMat, isPending: isRemovingMat } =
+    useRemoveRawMaterial();
 
   // Convex hooks - Recipes
   const { data: recipes = [], isLoading: recipesLoading } = useGetRecipes();
-  const { mutate: createRecipe, isPending: isCreatingRecipe } = useCreateRecipe();
-  const { mutate: updateRecipe, isPending: isUpdatingRecipe } = useUpdateRecipe();
-  const { mutate: removeRecipe, isPending: isRemovingRecipe } = useRemoveRecipe();
+  const { mutate: createRecipe, isPending: isCreatingRecipe } =
+    useCreateRecipe();
+  const { mutate: updateRecipe, isPending: isUpdatingRecipe } =
+    useUpdateRecipe();
+  const { mutate: removeRecipe, isPending: isRemovingRecipe } =
+    useRemoveRecipe();
 
   // Material form
   const [mCode, setMCode] = useState("");
@@ -52,7 +59,12 @@ export default function Home() {
   const unitCost = mQty && mCost ? Number(mCost) / Number(mQty) : 0;
 
   const resetMatForm = useCallback(() => {
-    setMCode(""); setMName(""); setMQty(""); setMUnit(""); setMCost(""); setEditingMatId(null);
+    setMCode("");
+    setMName("");
+    setMQty("");
+    setMUnit("");
+    setMCost("");
+    setEditingMatId(null);
   }, []);
 
   const handleSaveMat = async () => {
@@ -74,8 +86,12 @@ export default function Home() {
   };
 
   const handleEditMat = (mat: any) => {
-    setMCode(mat.code); setMName(mat.name); setMQty(String(mat.qtyPerPackage));
-    setMUnit(mat.unit); setMCost(String(mat.packageCost)); setEditingMatId(mat._id);
+    setMCode(mat.code);
+    setMName(mat.name);
+    setMQty(String(mat.qtyPerPackage));
+    setMUnit(mat.unit);
+    setMCost(String(mat.packageCost));
+    setEditingMatId(mat._id);
     setTab("materials");
   };
 
@@ -83,7 +99,7 @@ export default function Home() {
     await removeMat({ code: mat.code });
   };
 
-  const findMaterial = (code: string) => materials.find(m => m.code === code);
+  const findMaterial = (code: string) => materials.find((m) => m.code === code);
 
   const handleAddRMaterial = () => {
     if (!rmCode || !rmQty) return;
@@ -91,15 +107,19 @@ export default function Home() {
     if (!mat) return;
     const qtyUsed = Number(rmQty);
     const itemCost = qtyUsed * mat.unitCost;
-    setRMaterials([...rMaterials, {
-      materialCode: mat.code,
-      name: mat.name,
-      unitCost: mat.unitCost,
-      qtyUsed: qtyUsed,
-      unit: mat.unit,
-      itemCost,
-    }]);
-    setRmCode(""); setRmQty("");
+    setRMaterials([
+      ...rMaterials,
+      {
+        materialCode: mat.code,
+        name: mat.name,
+        unitCost: mat.unitCost,
+        qtyUsed: qtyUsed,
+        unit: mat.unit,
+        itemCost,
+      },
+    ]);
+    setRmCode("");
+    setRmQty("");
   };
 
   const handleRemoveRMaterial = (idx: number) => {
@@ -111,13 +131,17 @@ export default function Home() {
   const suggestedPrice = (() => {
     const margin = Number(rMargin) || 0;
     if (recipeTotal === 0) return 0;
-    if (margin >= 100) return Infinity;
-    return recipeTotal / (1 - margin / 100);
+    // if (margin >= 100) return Infinity;
+    return (recipeTotal / 100) * margin + recipeTotal;
   })();
 
   const resetRecipeForm = useCallback(() => {
-    setRName(""); setRFinalQty(""); setRFinalUnit(""); setRMargin("");
-    setRMaterials([]); setEditingRecipeId(null);
+    setRName("");
+    setRFinalQty("");
+    setRFinalUnit("");
+    setRMargin("");
+    setRMaterials([]);
+    setEditingRecipeId(null);
   }, []);
 
   const handleSaveRecipe = async () => {
@@ -160,7 +184,6 @@ export default function Home() {
       <div className="fixed inset-0 pointer-events-none bg-grid z-0" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* Hero Section */}
         <section className="pt-20 pb-12 md:pt-32 md:pb-20 relative">
           <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
@@ -172,13 +195,18 @@ export default function Home() {
                 AROMAS
               </h1>
               <div className="absolute -top-4 -right-4 bg-neo-accent border-4 border-neo-ink p-2 rotate-3 shadow-[4px_4px_0px_0px_#000]">
-                <span className="text-sm font-bold uppercase tracking-widest text-white">v2.0</span>
+                <span className="text-sm font-bold uppercase tracking-widest text-white">
+                  v2.0
+                </span>
               </div>
             </div>
             <div className="bg-neo-secondary border-4 border-neo-ink p-4 shadow-[8px_8px_0px_0px_#000] rotate-sticker-r max-w-md">
               <p className="text-lg font-bold leading-relaxed">
-                Controle de custos de produção de <span className="bg-neo-accent text-white px-1">aromatizadores</span>.
-                Gerencie matérias-primas e calcule preços.
+                Controle de custos de produção de{" "}
+                <span className="bg-neo-accent text-white px-1">
+                  aromatizadores
+                </span>
+                . Gerencie matérias-primas e calcule preços.
                 <span className="block mt-2 text-sm font-bold uppercase tracking-widest bg-neo-ink text-white inline-block px-2">
                   powered by convex
                 </span>
@@ -199,7 +227,11 @@ export default function Home() {
         <section className="py-8 md:py-12">
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
             <button
-              onClick={() => { setTab("materials"); resetRecipeForm(); resetMatForm(); }}
+              onClick={() => {
+                setTab("materials");
+                resetRecipeForm();
+                resetMatForm();
+              }}
               className={`px-8 py-4 font-bold text-sm uppercase tracking-widest border-4 border-neo-ink transition-all duration-100 ${
                 tab === "materials"
                   ? "bg-neo-ink text-neo-white shadow-[6px_6px_0px_0px_#000]"
@@ -209,7 +241,11 @@ export default function Home() {
               Matérias-Primas
             </button>
             <button
-              onClick={() => { setTab("recipes"); resetRecipeForm(); resetMatForm(); }}
+              onClick={() => {
+                setTab("recipes");
+                resetRecipeForm();
+                resetMatForm();
+              }}
               className={`px-8 py-4 font-bold text-sm uppercase tracking-widest border-4 border-neo-ink transition-all duration-100 ${
                 tab === "recipes"
                   ? "bg-neo-ink text-neo-white shadow-[6px_6px_0px_0px_#000]"
@@ -235,37 +271,45 @@ export default function Home() {
               <div className="card mb-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                   <div>
-                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">Código</label>
+                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">
+                      Código
+                    </label>
                     <input
                       value={mCode}
-                      onChange={e => setMCode(e.target.value)}
+                      onChange={(e) => setMCode(e.target.value)}
                       placeholder="MP001"
                       disabled={!!editingMatId}
                       className={editingMatId ? "opacity-50" : ""}
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">Nome do Produto</label>
+                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">
+                      Nome do Produto
+                    </label>
                     <input
                       value={mName}
-                      onChange={e => setMName(e.target.value)}
+                      onChange={(e) => setMName(e.target.value)}
                       placeholder="Álcool Etílico"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">Qtd por Embalagem</label>
+                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">
+                      Qtd por Embalagem
+                    </label>
                     <input
                       type="number"
                       value={mQty}
-                      onChange={e => setMQty(e.target.value)}
+                      onChange={(e) => setMQty(e.target.value)}
                       placeholder="1000"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">Unidade</label>
+                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">
+                      Unidade
+                    </label>
                     <select
                       value={mUnit}
-                      onChange={e => setMUnit(e.target.value)}
+                      onChange={(e) => setMUnit(e.target.value)}
                     >
                       <option value="">Selecione...</option>
                       <option value="ml">ml - mililitro</option>
@@ -277,12 +321,14 @@ export default function Home() {
                     </select>
                   </div>
                   <div>
-                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">Valor da Embalagem (R$)</label>
+                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">
+                      Valor da Embalagem (R$)
+                    </label>
                     <input
                       type="number"
                       step="0.01"
                       value={mCost}
-                      onChange={e => setMCost(e.target.value)}
+                      onChange={(e) => setMCost(e.target.value)}
                       placeholder="25.00"
                     />
                   </div>
@@ -290,9 +336,12 @@ export default function Home() {
 
                 {unitCost > 0 && (
                   <div className="bg-neo-muted border-4 border-neo-ink p-6 mb-8 shadow-[4px_4px_0px_0px_#000] rotate-sticker-r">
-                    <div className="font-bold text-xs uppercase tracking-widest mb-2">Custo Unitário Calculado</div>
+                    <div className="font-bold text-xs uppercase tracking-widest mb-2">
+                      Custo Unitário Calculado
+                    </div>
                     <div className="text-3xl font-bold">
-                      R$ {unitCost.toFixed(4)} <span className="text-lg">/ {mUnit || "unidade"}</span>
+                      R$ {unitCost.toFixed(4)}{" "}
+                      <span className="text-lg">/ {mUnit || "unidade"}</span>
                     </div>
                   </div>
                 )}
@@ -306,7 +355,10 @@ export default function Home() {
                     {editingMatId ? "ATUALIZAR" : "CADASTRAR"} →
                   </button>
                   {editingMatId && (
-                    <button className="btn-secondary active:translate-x-[6px] active:translate-y-[6px] active:shadow-none" onClick={resetMatForm}>
+                    <button
+                      className="btn-secondary active:translate-x-[6px] active:translate-y-[6px] active:shadow-none"
+                      onClick={resetMatForm}
+                    >
                       CANCELAR
                     </button>
                   )}
@@ -319,11 +371,15 @@ export default function Home() {
 
               {materialsLoading ? (
                 <div className="card text-center py-16">
-                  <p className="text-xl font-bold italic opacity-40">Carregando...</p>
+                  <p className="text-xl font-bold italic opacity-40">
+                    Carregando...
+                  </p>
                 </div>
               ) : materials.length === 0 ? (
                 <div className="card text-center py-16">
-                  <p className="text-xl font-bold italic opacity-40">Nenhuma matéria-prima cadastrada ainda.</p>
+                  <p className="text-xl font-bold italic opacity-40">
+                    Nenhuma matéria-prima cadastrada ainda.
+                  </p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -340,18 +396,30 @@ export default function Home() {
                       </tr>
                     </thead>
                     <tbody>
-                      {materials.map(m => (
+                      {materials.map((m) => (
                         <tr key={m._id}>
                           <td className="font-mono font-bold">{m.code}</td>
                           <td className="font-bold">{m.name}</td>
                           <td>{m.qtyPerPackage}</td>
                           <td className="font-mono font-bold">{m.unit}</td>
                           <td>R$ {m.packageCost.toFixed(2)}</td>
-                          <td className="font-mono font-bold">R$ {m.unitCost.toFixed(4)}</td>
+                          <td className="font-mono font-bold">
+                            R$ {m.unitCost.toFixed(4)}
+                          </td>
                           <td>
                             <div className="flex gap-2">
-                              <button className="btn-danger active:translate-x-[2px] active:translate-y-[2px] active:shadow-none" onClick={() => handleEditMat(m)}>Editar</button>
-                              <button className="btn-danger active:translate-x-[2px] active:translate-y-[2px] active:shadow-none" onClick={() => handleDeleteMat(m)}>Excluir</button>
+                              <button
+                                className="btn-danger active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                                onClick={() => handleEditMat(m)}
+                              >
+                                Editar
+                              </button>
+                              <button
+                                className="btn-danger active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                                onClick={() => handleDeleteMat(m)}
+                              >
+                                Excluir
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -378,30 +446,36 @@ export default function Home() {
               <div className="card mb-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                   <div>
-                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">Nome da Receita</label>
+                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">
+                      Nome da Receita
+                    </label>
                     <input
                       value={rName}
-                      onChange={e => setRName(e.target.value)}
+                      onChange={(e) => setRName(e.target.value)}
                       placeholder="Aromatizador Lavanda"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">Qtd Final</label>
+                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">
+                      Qtd Final
+                    </label>
                     <input
                       type="number"
                       value={rFinalQty}
-                      onChange={e => setRFinalQty(e.target.value)}
+                      onChange={(e) => setRFinalQty(e.target.value)}
                       placeholder="500"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">Unidade</label>
+                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">
+                      Unidade
+                    </label>
                     <select
                       value={rFinalUnit}
-                      onChange={e => setRFinalUnit(e.target.value)}
+                      onChange={(e) => setRFinalUnit(e.target.value)}
                     >
                       <option value="">Selecione...</option>
-                       <option value="ml">ml - mililitro</option>
+                      <option value="ml">ml - mililitro</option>
                       <option value="L">L - litro</option>
                       <option value="g">g - grama</option>
                       <option value="kg">kg - kilograma</option>
@@ -410,11 +484,13 @@ export default function Home() {
                     </select>
                   </div>
                   <div>
-                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">Margem de Lucro (%)</label>
+                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">
+                      Margem de Lucro (%)
+                    </label>
                     <input
                       type="number"
                       value={rMargin}
-                      onChange={e => setRMargin(e.target.value)}
+                      onChange={(e) => setRMargin(e.target.value)}
                       placeholder="30"
                     />
                   </div>
@@ -428,13 +504,15 @@ export default function Home() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                   <div>
-                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">Código da Matéria</label>
+                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">
+                      Código da Matéria
+                    </label>
                     <select
                       value={rmCode}
-                      onChange={e => setRmCode(e.target.value)}
+                      onChange={(e) => setRmCode(e.target.value)}
                     >
                       <option value="">Selecione...</option>
-                      {materials.map(m => (
+                      {materials.map((m) => (
                         <option key={m._id} value={m.code}>
                           {m.code} - {m.name}
                         </option>
@@ -442,11 +520,13 @@ export default function Home() {
                     </select>
                   </div>
                   <div>
-                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">Quantidade Usada</label>
+                    <label className="block font-bold text-xs uppercase tracking-widest mb-2">
+                      Quantidade Usada
+                    </label>
                     <input
                       type="number"
                       value={rmQty}
-                      onChange={e => setRmQty(e.target.value)}
+                      onChange={(e) => setRmQty(e.target.value)}
                       placeholder="Qtd"
                     />
                   </div>
@@ -460,17 +540,22 @@ export default function Home() {
                   </div>
                 </div>
 
-                {rmCode && (() => {
-                  const mat = findMaterial(rmCode);
-                  if (!mat) return null;
-                  return (
-                    <div className="bg-neo-secondary border-4 border-neo-ink p-4 mb-6 shadow-[4px_4px_0px_0px_#000] rotate-sticker">
-                      <span className="font-bold text-sm uppercase tracking-widest">Selecionado: </span>
-                      <span className="font-bold">{mat.name}</span>
-                      <span className="font-mono text-sm ml-4">R$ {mat.unitCost.toFixed(4)} / {mat.unit}</span>
-                    </div>
-                  );
-                })()}
+                {rmCode &&
+                  (() => {
+                    const mat = findMaterial(rmCode);
+                    if (!mat) return null;
+                    return (
+                      <div className="bg-neo-secondary border-4 border-neo-ink p-4 mb-6 shadow-[4px_4px_0px_0px_#000] rotate-sticker">
+                        <span className="font-bold text-sm uppercase tracking-widest">
+                          Selecionado:{" "}
+                        </span>
+                        <span className="font-bold">{mat.name}</span>
+                        <span className="font-mono text-sm ml-4">
+                          R$ {mat.unitCost.toFixed(4)} / {mat.unit}
+                        </span>
+                      </div>
+                    );
+                  })()}
 
                 {rMaterials.length > 0 && (
                   <div className="overflow-x-auto mb-8">
@@ -489,14 +574,25 @@ export default function Home() {
                       <tbody>
                         {rMaterials.map((rm, idx) => (
                           <tr key={idx}>
-                            <td className="font-mono font-bold">{rm.materialCode}</td>
+                            <td className="font-mono font-bold">
+                              {rm.materialCode}
+                            </td>
                             <td className="font-bold">{rm.name}</td>
                             <td>{rm.qtyUsed}</td>
                             <td className="font-mono font-bold">{rm.unit}</td>
-                            <td className="font-mono font-bold">R$ {rm.unitCost.toFixed(4)}</td>
-                            <td className="font-mono font-bold">R$ {rm.itemCost.toFixed(2)}</td>
+                            <td className="font-mono font-bold">
+                              R$ {rm.unitCost.toFixed(4)}
+                            </td>
+                            <td className="font-mono font-bold">
+                              R$ {rm.itemCost.toFixed(2)}
+                            </td>
                             <td>
-                              <button className="btn-danger active:translate-x-[2px] active:translate-y-[2px] active:shadow-none" onClick={() => handleRemoveRMaterial(idx)}>Remover</button>
+                              <button
+                                className="btn-danger active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                                onClick={() => handleRemoveRMaterial(idx)}
+                              >
+                                Remover
+                              </button>
                             </td>
                           </tr>
                         ))}
@@ -509,22 +605,43 @@ export default function Home() {
                   <div className="border-4 border-neo-ink bg-neo-white p-6 sm:p-8 shadow-[8px_8px_0px_0px_#000] rotate-sticker-r">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                       <div>
-                        <div className="font-bold text-xs uppercase tracking-widest mb-2">Custo Total</div>
-                        <div className="text-3xl sm:text-4xl font-bold">R$ {recipeTotal.toFixed(2)}</div>
+                        <div className="font-bold text-xs uppercase tracking-widest mb-2">
+                          Custo Total
+                        </div>
+                        <div className="text-3xl sm:text-4xl font-bold">
+                          R$ {recipeTotal.toFixed(2)}
+                        </div>
                       </div>
                       <div>
-                        <div className="font-bold text-xs uppercase tracking-widest mb-2">Margem</div>
-                        <div className="text-3xl sm:text-4xl font-bold">{rMargin || 0}%</div>
+                        <div className="font-bold text-xs uppercase tracking-widest mb-2">
+                          Margem
+                        </div>
+                        <div className="text-3xl sm:text-4xl font-bold">
+                          {rMargin || 0}%
+                        </div>
                       </div>
                       <div>
-                        <div className="font-bold text-xs uppercase tracking-widest mb-2">Preço Sugerido</div>
-                        <div className="text-3xl sm:text-4xl font-bold bg-neo-accent text-white px-2 inline-block" style={{fontSize: suggestedPrice > 999 ? "1.5rem" : undefined}}>
-                          {suggestedPrice === Infinity ? "∞ (margem 100%)" : `R$ ${suggestedPrice.toFixed(2)}`}
+                        <div className="font-bold text-xs uppercase tracking-widest mb-2">
+                          Preço Sugerido
+                        </div>
+                        <div
+                          className="text-3xl sm:text-4xl font-bold bg-neo-accent text-white px-2 inline-block"
+                          style={{
+                            fontSize:
+                              suggestedPrice > 999 ? "1.5rem" : undefined,
+                          }}
+                        >
+                          {/* {suggestedPrice === Infinity
+                            ? "∞ (margem 100%)"
+                            : `R$ ${suggestedPrice.toFixed(2)}`} */}
+                            R${suggestedPrice.toFixed(2)}
                         </div>
                       </div>
                       {rFinalQty && (
                         <div>
-                          <div className="font-bold text-xs uppercase tracking-widest mb-2">Custo / Unidade</div>
+                          <div className="font-bold text-xs uppercase tracking-widest mb-2">
+                            Custo / Unidade
+                          </div>
                           <div className="text-3xl sm:text-4xl font-bold">
                             R$ {(recipeTotal / Number(rFinalQty)).toFixed(2)}
                           </div>
@@ -543,7 +660,10 @@ export default function Home() {
                     {editingRecipeId ? "ATUALIZAR RECEITA" : "SALVAR RECEITA"} →
                   </button>
                   {editingRecipeId && (
-                    <button className="btn-secondary active:translate-x-[6px] active:translate-y-[6px] active:shadow-none" onClick={resetRecipeForm}>
+                    <button
+                      className="btn-secondary active:translate-x-[6px] active:translate-y-[6px] active:shadow-none"
+                      onClick={resetRecipeForm}
+                    >
                       CANCELAR
                     </button>
                   )}
@@ -556,11 +676,15 @@ export default function Home() {
 
               {recipesLoading ? (
                 <div className="card text-center py-16">
-                  <p className="text-xl font-bold italic opacity-40">Carregando...</p>
+                  <p className="text-xl font-bold italic opacity-40">
+                    Carregando...
+                  </p>
                 </div>
               ) : recipes.length === 0 ? (
                 <div className="card text-center py-16">
-                  <p className="text-xl font-bold italic opacity-40">Nenhuma receita cadastrada ainda.</p>
+                  <p className="text-xl font-bold italic opacity-40">
+                    Nenhuma receita cadastrada ainda.
+                  </p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -577,18 +701,34 @@ export default function Home() {
                       </tr>
                     </thead>
                     <tbody>
-                      {recipes.map(r => (
+                      {recipes.map((r) => (
                         <tr key={r._id}>
                           <td className="font-bold">{r.name}</td>
                           <td>{r.finalQty}</td>
                           <td className="font-mono font-bold">{r.finalUnit}</td>
-                          <td className="font-mono font-bold">R$ {r.totalCost.toFixed(2)}</td>
+                          <td className="font-mono font-bold">
+                            R$ {r.totalCost.toFixed(2)}
+                          </td>
                           <td className="font-bold">{r.profitMargin}%</td>
-                          <td className="font-mono font-bold bg-neo-accent text-white px-2">{r.suggestedPrice === Infinity ? "∞" : `R$ ${r.suggestedPrice.toFixed(2)}`}</td>
+                          <td className="font-mono font-bold bg-neo-accent text-white px-2">
+                            {r.suggestedPrice === Infinity
+                              ? "∞"
+                              : `R$ ${r.suggestedPrice.toFixed(2)}`}
+                          </td>
                           <td>
                             <div className="flex gap-2">
-                              <button className="btn-danger active:translate-x-[2px] active:translate-y-[2px] active:shadow-none" onClick={() => handleEditRecipe(r)}>Editar</button>
-                              <button className="btn-danger active:translate-x-[2px] active:translate-y-[2px] active:shadow-none" onClick={() => handleDeleteRecipe(r._id)}>Excluir</button>
+                              <button
+                                className="btn-danger active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                                onClick={() => handleEditRecipe(r)}
+                              >
+                                Editar
+                              </button>
+                              <button
+                                className="btn-danger active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+                                onClick={() => handleDeleteRecipe(r._id)}
+                              >
+                                Excluir
+                              </button>
                             </div>
                           </td>
                         </tr>

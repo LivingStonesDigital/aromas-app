@@ -10,6 +10,7 @@
 
 import type * as rawMaterials from "../rawMaterials.js";
 import type * as recipes from "../recipes.js";
+import type * as utils_pricing from "../utils/pricing.js";
 
 import type {
   ApiFromModules,
@@ -20,6 +21,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   rawMaterials: typeof rawMaterials;
   recipes: typeof recipes;
+  "utils/pricing": typeof utils_pricing;
 }>;
 
 /**

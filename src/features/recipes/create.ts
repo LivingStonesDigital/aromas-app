@@ -1,6 +1,7 @@
 import { useMutation } from "convex/react";
 import { useCallback, useMemo, useState } from "react";
 import { api } from "../../../convex/_generated/api";
+// Note: frontend normalization/logic moved to backend; no price recomputation on frontend
 
 export interface RecipeMaterialInput {
   materialCode: string;
@@ -19,6 +20,7 @@ type RequestType = {
   totalCost: number;
   profitMargin: number;
   suggestedPrice: number;
+  preserveSuggestedPrice?: boolean;
 };
 
 type ResponseType = string | null;
@@ -51,7 +53,16 @@ export const useCreateRecipe = () => {
         setError(null);
         setStatus("pending");
 
-        const response = await mutation(values);
+        // Valida inputs antes de enviar
+        if (values.totalCost < 0) throw new Error("totalCost não pode ser negativo");
+        if (values.profitMargin < 0) throw new Error("profitMargin não pode ser negativo");
+
+        // Envia com preserveSuggestedPrice conforme o usuário tenha informado
+        const payload: RequestType = {
+          ...values,
+          preserveSuggestedPrice: values.preserveSuggestedPrice ?? false,
+        } as any;
+        const response = await (mutation as any)(payload);
         setStatus("success");
         options?.onSuccess?.(response);
         return response;

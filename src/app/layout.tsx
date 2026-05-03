@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -30,6 +30,7 @@ export default function RootLayout({
         />
       </head>
       <body
+        suppressContentEditableWarning
         className={`${spaceGrotesk.variable} font-sans bg-neo-bg text-neo-ink`}
       >
         <ConvexClientProvider>{children}</ConvexClientProvider>
